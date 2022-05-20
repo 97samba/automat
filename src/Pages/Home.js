@@ -1,39 +1,68 @@
 import {
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
+  CircularProgress,
+  Divider,
   MenuItem,
-  Paper,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import { Box } from "@mui/system";
+import React, { createContext, useContext, useState } from "react";
 import CodeAPList from "../Components/HomeComponents/CodeAPList";
-import contacts from "../contact.json";
+// import contacts from "../contact.json";
+import contacts from "../REFI.json";
+import { AiOutlineSearch } from "react-icons/ai";
+import { COLORS } from "../COLORS";
+import { useNavigate, useParams } from "react-router-dom";
+
+export const HomeContext = createContext();
+const filters = [
+  { label: "Nom", value: "name" },
+  { label: "Code AP", value: "APCode" },
+];
+const Squads = ["Toutes", "CBD", "SODA", "ITPS", "Autre"];
 
 const Header = () => {
-  const filters = [
-    { label: "Nom", value: "name" },
-    { label: "Code AP", value: "APCode" },
-  ];
+  const { handleSquadChange, Squad, filteredDatas } = useContext(HomeContext);
+
   return (
-    <Stack direction="row" alignItems="center">
-      <Typography color="GrayText" variant="h5" fontWeight={550} flexGrow={1}>
-        Application par Squad
-      </Typography>
-      <FormGroup row sx={{ mx: 2 }}>
-        <FormControlLabel
-          control={<Checkbox size="small" defaultChecked />}
-          label="CBD"
-        />
-        <FormControlLabel control={<Checkbox size="small" />} label="ITPS" />
-        <FormControlLabel control={<Checkbox size="small" />} label="SODA" />
-      </FormGroup>
+    <Stack direction="row" alignItems="center" spacing={2} my={2} px={4}>
+      <Box flexGrow={1}>
+        <Typography color="GrayText" variant="h5" fontWeight={550}>
+          Application par Squad
+        </Typography>
+        <Typography mt={1} color="GrayText" variant="body1">
+          {filteredDatas.length + " Eléments"}
+        </Typography>
+      </Box>
+      <TextField
+        sx={{ minWidth: 290 }}
+        size="small"
+        label="Recherche"
+        placeholder="Code ap ou Nom d'application"
+        InputProps={{
+          endAdornment: <AiOutlineSearch size={25} color={COLORS.green} />,
+        }}
+        autoFocus
+      />
+
       <TextField select label="Trier par" value="name" size="small">
         {filters.map((filter, index) => (
           <MenuItem key={index} value={filter.value}>
             {filter.label}
+          </MenuItem>
+        ))}
+      </TextField>
+      <TextField
+        select
+        label="Squad"
+        value={Squad}
+        size="small"
+        onChange={handleSquadChange}
+      >
+        {Squads.map((squad) => (
+          <MenuItem key={squad} value={squad}>
+            {squad}
           </MenuItem>
         ))}
       </TextField>
@@ -42,43 +71,61 @@ const Header = () => {
 };
 
 const Home = () => {
-  const datas = [
-    {
-      code: "AP25161",
-      name: "Base des interactions",
-      criticity: "C1 Serious",
-      squad: "CBD",
-      shortName: "GREG",
-    },
-    {
-      code: "AP11695",
-      name: "Data Management Tool",
-      criticity: "C3 moderate",
-      squad: "CBD",
-      shortName: "DMT",
-    },
+  const { id } = useParams();
+  let navigate = useNavigate();
 
-    {
-      code: "AP24244",
-      name: "Tracabilité de la distribution & production métier",
-      criticity: "C3 moderate",
-      squad: "CBD",
-      shortName: "BASETRACE",
-    },
-    {
-      code: "AP24646",
-      name: "Datahub Distributed Decision",
-      criticity: "C3 moderate",
-      squad: "CBD",
-      shortName: "D3",
-    },
-  ];
+  const [filteredDatas, setFilteredDatas] = useState(contacts);
+  const [selectedItem, setselectedItem] = useState(id !== undefined);
+  const [Squad, setSquad] = useState("Toutes");
+  const [loading, setloading] = useState(false);
+
+  function filterBySquad(squad) {
+    if (squad === "Toutes") return setFilteredDatas(contacts);
+    let newState = contacts.filter((data) => data.Squad === squad);
+    setFilteredDatas(newState);
+  }
+
+  function handleSquadChange(e) {
+    setloading(true);
+    console.log("e.target.value", e.target.value);
+    setSquad(e.target.value);
+    filterBySquad(e.target.value);
+    setloading(false);
+  }
+
+  function describeApplication(application) {
+    setselectedItem(application);
+    navigate("?code=" + application.CODE_AP);
+  }
+
+  function closeApplicationDescription() {
+    setselectedItem(undefined);
+  }
 
   return (
-    <Stack p={5}>
-      <Header />
-      <CodeAPList datas={contacts} />
-    </Stack>
+    <HomeContext.Provider
+      value={{
+        filteredDatas,
+        selectedItem,
+        handleSquadChange,
+        Squad,
+        describeApplication,
+        closeApplicationDescription,
+      }}
+    >
+      <Stack>
+        <Header />
+        <Divider />
+
+        {loading ? (
+          <Box py={10} flex={1} textAlign="center">
+            <CircularProgress size={100} color="success" />
+          </Box>
+        ) : (
+          <CodeAPList datas={filteredDatas} />
+        )}
+      </Stack>
+    </HomeContext.Provider>
   );
 };
 

@@ -1,19 +1,16 @@
 import { Grid, Stack, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext } from "react";
+import { HomeContext } from "../../Pages/Home";
+import ApplicationViewer from "./ApplicationViewer";
 import CodeAPCard from "./CodeAPCard";
 
-const CodeAPList = ({ datas }) => {
-  const { id } = useParams();
-  useEffect(() => {
-    console.log("AP", id);
-  }, []);
+const CodeAPList = () => {
+  const { filteredDatas, selectedItem } = useContext(HomeContext);
 
-  const [selectedItem, setselectedItem] = useState(id !== undefined);
   const Left = () => {
     return (
-      <Grid container my={4} spacing={2} flex={1}>
-        {datas.map((data, index) => (
+      <Grid container my={2} spacing={2} flex={1}>
+        {filteredDatas.map((data, index) => (
           <Grid
             item
             xs={6}
@@ -22,6 +19,8 @@ const CodeAPList = ({ datas }) => {
             xl={selectedItem ? 6 : 3}
             lg={3}
             key={index}
+            flexDirection="column"
+            flex={1}
           >
             <CodeAPCard codeAp={data} />
           </Grid>
@@ -29,22 +28,17 @@ const CodeAPList = ({ datas }) => {
       </Grid>
     );
   };
-  const Right = () => {
-    return (
-      <Stack
-        flex={1}
-        sx={{ borderLeft: 1, borderColor: "lightGray" }}
-        p={2}
-        display={selectedItem ? "flex" : "none  "}
-      >
-        <Typography>right </Typography>
-      </Stack>
-    );
-  };
+
   return (
-    <Stack direction="row" flex={1} spacing={2}>
+    <Stack
+      direction="row"
+      flex={1}
+      spacing={2}
+      ml={4}
+      mr={selectedItem ? 0 : 4}
+    >
       <Left />
-      <Right />
+      {selectedItem && <ApplicationViewer />}
     </Stack>
   );
 };
