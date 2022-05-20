@@ -8,8 +8,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import CodeAPList from "../Components/HomeComponents/CodeAPList";
+import contacts from "../contact.json";
 
 const Header = () => {
   const filters = [
@@ -72,10 +73,11 @@ const Home = () => {
       shortName: "D3",
     },
   ];
+
   return (
     <Stack p={5}>
       <Header />
-      <CodeAPList datas={datas} />
+      <CodeAPList datas={contacts} />
     </Stack>
   );
 };
