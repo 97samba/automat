@@ -1,4 +1,4 @@
-import { Chip, Link, Paper, Stack, Typography } from "@mui/material";
+import { Chip, Link, Paper, Stack, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useContext } from "react";
 import { BsFolderFill, BsThreeDots } from "react-icons/bs";
@@ -18,63 +18,65 @@ const CodeAPCard = ({ codeAp }) => {
       href={"?code=" + codeAp.CODE_AP}
       onClick={handleOpen}
     >
-      <Paper
-        sx={{
-          marginBottom: 3,
-          boxShadow: "1px 2px 4px 1px #E5E5E5",
-          "&:hover": { boxShadow: "1px 1px 5px 2px #E5E5E5", border: 0 },
-        }}
-        elevation={0}
-      >
-        <Stack p={2} spacing={1}>
-          {/**head */}
+      <Tooltip title={codeAp.LIBELLE_LONG}>
+        <Paper
+          sx={{
+            marginBottom: 3,
+            boxShadow: "1px 2px 4px 1px #E5E5E5",
+            "&:hover": { boxShadow: "1px 1px 5px 2px #E5E5E5", border: 0 },
+          }}
+          elevation={0}
+        >
+          <Stack p={2} spacing={1}>
+            {/**head */}
 
-          <Stack direction="row" justifyContent="space-between">
-            <Chip label={codeAp.Squad} size="small" />
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Typography
-                variant="body1"
-                fontSize={17}
-                fontWeight={550}
-                color={COLORS.green}
-              >
-                {codeAp.LIBELLE_COURT + " - " + codeAp.CODE_AP}
+            <Stack direction="row" justifyContent="space-between">
+              <Chip label={codeAp.Squad} size="small" />
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Typography
+                  variant="body1"
+                  fontSize={17}
+                  fontWeight={550}
+                  color={COLORS.green}
+                >
+                  {codeAp.LIBELLE_COURT + " - " + codeAp.CODE_AP}
+                </Typography>
+                <BsThreeDots color="gray" size={18} />
+              </Stack>
+            </Stack>
+
+            {/**Body */}
+            <Box fontWeight={500}>
+              <Typography variant="h6" color="GrayText" noWrap>
+                {codeAp.LIBELLE_LONG}
               </Typography>
-              <BsThreeDots color="gray" size={18} />
+              <Typography variant="body2" color={COLORS.orange}>
+                {codeAp.ENTITE_MOE_NOM.split(" ").splice(0, 2).join(" ")}
+              </Typography>
+            </Box>
+            <Stack direction="row" spacing={1}>
+              <Chip
+                variant="outlined"
+                sx={{ borderRadius: 2 }}
+                label={
+                  "C" +
+                  codeAp.CLASSE_DE_SERVICE +
+                  " " +
+                  codeAp.CONTINUITY_LEVEL_LIBELLE
+                }
+                size="small"
+              />
+              <Chip
+                variant="outlined"
+                sx={{ borderRadius: 2 }}
+                label={codeAp.TYPE_DE_SOLUTION_LIBELLE}
+                size="small"
+                color="success"
+              />
             </Stack>
           </Stack>
-
-          {/**Body */}
-          <Box fontWeight={500}>
-            <Typography variant="h6" color="GrayText" noWrap>
-              {codeAp.LIBELLE_LONG}
-            </Typography>
-            <Typography variant="body2" color={COLORS.orange}>
-              {codeAp.ENTITE_MOE_NOM.split(" ").splice(0, 2).join(" ")}
-            </Typography>
-          </Box>
-          <Stack direction="row" spacing={1}>
-            <Chip
-              variant="outlined"
-              sx={{ borderRadius: 2 }}
-              label={
-                "C" +
-                codeAp.CLASSE_DE_SERVICE +
-                " " +
-                codeAp.CONTINUITY_LEVEL_LIBELLE
-              }
-              size="small"
-            />
-            <Chip
-              variant="outlined"
-              sx={{ borderRadius: 2 }}
-              label={codeAp.TYPE_DE_SOLUTION_LIBELLE}
-              size="small"
-              color="success"
-            />
-          </Stack>
-        </Stack>
-      </Paper>
+        </Paper>
+      </Tooltip>
     </Link>
   );
 };

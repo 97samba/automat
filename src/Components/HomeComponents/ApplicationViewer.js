@@ -38,24 +38,6 @@ const ApplicationViewer = () => {
           </Typography>
           <BsThreeDots size={25} color="gray" />
         </Stack>
-        <Box>
-          <IconButton>
-            <MdClose
-              size={25}
-              color="gray"
-              onClick={closeApplicationDescription}
-            />
-          </IconButton>
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            fontSize={17}
-            color={COLORS.green}
-          >
-            {selectedItem.LIBELLE_COURT + " - " + selectedItem.CODE_AP}
-          </Typography>
-          <BsThreeDots size={25} color="gray" />
-        </Box>
       </Box>
     </Stack>
   );

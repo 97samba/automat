@@ -7,6 +7,7 @@ import {
   Avatar,
   Divider,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import React from "react";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
@@ -60,19 +61,21 @@ const SideBar = () => {
           alignItems: "center",
         }}
       >
-        <MenuItem
-          key={index}
-          disableGutters
-          sx={{
-            p: 0,
-            mx: 1.6,
-            borderRadius: 2,
-          }}
-        >
-          <Stack flex={1} p={2} alignItems="center" spacing={1}>
-            {item.icon}
-          </Stack>
-        </MenuItem>
+        <Tooltip title={item.label} placement="right" sx={{ mx: 1.6 }}>
+          <MenuItem
+            key={index}
+            disableGutters
+            sx={{
+              p: 0,
+
+              borderRadius: 2,
+            }}
+          >
+            <Stack flex={1} p={2} alignItems="center" spacing={1}>
+              {item.icon}
+            </Stack>
+          </MenuItem>
+        </Tooltip>
       </Stack>
     );
   };
